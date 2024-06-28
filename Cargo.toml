@@ -30,7 +30,7 @@ rayon = { version = "1.10.0", optional = true }
 
 [dev-dependencies]
 flic = "0.1.6"
-sdl2 = { version = "0.30.0", features = ["image"] }
+sdl2 = { version = "0.37.0", features = ["image"] }
 
 [badges]
 travis-ci = { repository = "wangds/libbayer" }

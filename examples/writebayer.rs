@@ -19,7 +19,7 @@ fn main() {
         return;
     }
 
-    sdl2::image::init(sdl2::image::INIT_JPG | sdl2::image::INIT_PNG | sdl2::image::INIT_TIF)
+    sdl2::image::init(sdl2::image::InitFlag::JPG | sdl2::image::InitFlag::PNG | sdl2::image::InitFlag::TIF)
         .unwrap();
 
     let cfa = parse_cfa(&args[0]);
