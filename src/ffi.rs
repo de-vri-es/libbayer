@@ -41,7 +41,7 @@ fn run_demosaic<F>(
     dst: *mut CRasterMut,
 ) -> c_uint
 where
-    F: FnOnce(&mut Read, BayerDepth, CFA, &mut RasterMut) -> BayerResult<()>,
+    F: FnOnce(&mut dyn Read, BayerDepth, CFA, &mut RasterMut) -> BayerResult<()>,
 {
     if src.is_null() || dst.is_null() {
         println!("{} {} - bad input parameters", file, line);

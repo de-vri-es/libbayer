@@ -60,7 +60,7 @@ mod raster;
 ///         &mut dst);
 /// ```
 pub fn run_demosaic(
-    r: &mut Read,
+    r: &mut dyn Read,
     depth: BayerDepth,
     cfa: CFA,
     alg: Demosaic,

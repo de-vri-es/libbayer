@@ -62,7 +62,7 @@ impl BorderMirror8 {
 }
 
 impl BayerRead8 for BorderMirror8 {
-    fn read_line(&self, r: &mut Read, dst: &mut [u8]) -> BayerResult<()> {
+    fn read_line(&self, r: &mut dyn Read, dst: &mut [u8]) -> BayerResult<()> {
         let BorderMirror8(x1, x2, x3) = *self;
         read_exact_u8(r, &mut dst[x1..x2])?;
         fill_row!(dst, x1, x2, x3);
@@ -82,7 +82,7 @@ impl BorderMirror16BE {
 }
 
 impl BayerRead16 for BorderMirror16BE {
-    fn read_line(&self, r: &mut Read, dst: &mut [u16]) -> BayerResult<()> {
+    fn read_line(&self, r: &mut dyn Read, dst: &mut [u16]) -> BayerResult<()> {
         let BorderMirror16BE(x1, x2, x3) = *self;
         read_exact_u16be(r, &mut dst[x1..x2])?;
         fill_row!(dst, x1, x2, x3);
@@ -102,7 +102,7 @@ impl BorderMirror16LE {
 }
 
 impl BayerRead16 for BorderMirror16LE {
-    fn read_line(&self, r: &mut Read, dst: &mut [u16]) -> BayerResult<()> {
+    fn read_line(&self, r: &mut dyn Read, dst: &mut [u16]) -> BayerResult<()> {
         let BorderMirror16LE(x1, x2, x3) = *self;
         read_exact_u16le(r, &mut dst[x1..x2])?;
         fill_row!(dst, x1, x2, x3);

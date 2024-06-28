@@ -27,7 +27,7 @@ use {BayerDepth, BayerError, BayerResult, RasterMut, CFA};
 
 const PADDING: usize = 1;
 
-pub fn run(r: &mut Read, depth: BayerDepth, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
+pub fn run(r: &mut dyn Read, depth: BayerDepth, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
     if dst.w < 2 || dst.h < 2 {
         return Err(BayerError::WrongResolution);
     }
@@ -99,7 +99,7 @@ macro_rules! apply_kernel_g {
 /*--------------------------------------------------------------*/
 
 #[cfg(feature = "rayon")]
-fn debayer_u8(r: &mut Read, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
+fn debayer_u8(r: &mut dyn Read, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
     let (w, h) = (dst.w, dst.h);
     let mut data = vec![0u8; (2 * PADDING + w) * (2 * PADDING + h)];
 
@@ -128,7 +128,7 @@ fn debayer_u8(r: &mut Read, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
     dst.buf
         .par_chunks_mut(dst.stride)
         .enumerate()
-        .for_each(|(y, mut row)| {
+        .for_each(|(y, row)| {
             let stride = 2 * PADDING + w;
             let prev = &data[(stride * (PADDING + y - 1))..(stride * (PADDING + y + 0))];
             let curr = &data[(stride * (PADDING + y + 0))..(stride * (PADDING + y + 1))];
@@ -142,14 +142,14 @@ fn debayer_u8(r: &mut Read, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
 }
 
 #[cfg(feature = "rayon")]
-fn debayer_u16(r: &mut Read, be: bool, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
+fn debayer_u16(r: &mut dyn Read, be: bool, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
     let (w, h) = (dst.w, dst.h);
     let mut data = vec![0u16; (2 * PADDING + w) * (2 * PADDING + h)];
 
     // Read all data.
     {
         let stride = 2 * PADDING + w;
-        let rdr: Box<BayerRead16> = if be {
+        let rdr: Box<dyn BayerRead16> = if be {
             Box::new(BorderReplicate16BE::new(w, PADDING))
         } else {
             Box::new(BorderReplicate16LE::new(w, PADDING))
@@ -175,7 +175,7 @@ fn debayer_u16(r: &mut Read, be: bool, cfa: CFA, dst: &mut RasterMut) -> BayerRe
     dst.buf
         .par_chunks_mut(dst.stride)
         .enumerate()
-        .for_each(|(y, mut row)| {
+        .for_each(|(y, row)| {
             let stride = 2 * PADDING + w;
             let prev = &data[(stride * (PADDING + y - 1))..(stride * (PADDING + y + 0))];
             let curr = &data[(stride * (PADDING + y + 0))..(stride * (PADDING + y + 1))];
@@ -195,7 +195,7 @@ fn debayer_u16(r: &mut Read, be: bool, cfa: CFA, dst: &mut RasterMut) -> BayerRe
 /*--------------------------------------------------------------*/
 
 #[cfg(not(feature = "rayon"))]
-fn debayer_u8(r: &mut Read, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
+fn debayer_u8(r: &mut dyn Read, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
     let (w, h) = (dst.w, dst.h);
     let mut prev = vec![0u8; 2 * PADDING + w];
     let mut curr = vec![0u8; 2 * PADDING + w];
@@ -232,14 +232,14 @@ fn debayer_u8(r: &mut Read, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
 }
 
 #[cfg(not(feature = "rayon"))]
-fn debayer_u16(r: &mut Read, be: bool, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
+fn debayer_u16(r: &mut dyn Read, be: bool, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
     let (w, h) = (dst.w, dst.h);
     let mut prev = vec![0u16; 2 * PADDING + w];
     let mut curr = vec![0u16; 2 * PADDING + w];
     let mut next = vec![0u16; 2 * PADDING + w];
     let mut cfa = cfa;
 
-    let rdr: Box<BayerRead16> = if be {
+    let rdr: Box<dyn BayerRead16> = if be {
         Box::new(BorderReplicate16BE::new(w, PADDING))
     } else {
         Box::new(BorderReplicate16LE::new(w, PADDING))

@@ -7,7 +7,7 @@ use border_none::*;
 use demosaic::check_depth;
 use {BayerDepth, BayerError, BayerResult, RasterMut, CFA};
 
-pub fn run(r: &mut Read, depth: BayerDepth, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
+pub fn run(r: &mut dyn Read, depth: BayerDepth, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
     if dst.w < 2 || dst.h < 2 {
         return Err(BayerError::WrongResolution);
     }
@@ -65,7 +65,7 @@ macro_rules! apply_kernel_g {
 
 /*--------------------------------------------------------------*/
 
-fn debayer_u8(r: &mut Read, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
+fn debayer_u8(r: &mut dyn Read, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
     let (w, h) = (dst.w, dst.h);
     let mut curr = vec![0u8; w];
     let mut cfa = cfa;
@@ -82,12 +82,12 @@ fn debayer_u8(r: &mut Read, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
     Ok(())
 }
 
-fn debayer_u16(r: &mut Read, be: bool, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
+fn debayer_u16(r: &mut dyn Read, be: bool, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
     let (w, h) = (dst.w, dst.h);
     let mut curr = vec![0u16; w];
     let mut cfa = cfa;
 
-    let rdr: Box<BayerRead16> = if be {
+    let rdr: Box<dyn BayerRead16> = if be {
         Box::new(BorderNone16BE::new())
     } else {
         Box::new(BorderNone16LE::new())
