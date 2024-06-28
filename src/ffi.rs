@@ -4,7 +4,8 @@ use std::io::{Cursor,Read};
 use std::mem;
 use std::ptr;
 use std::slice;
-use libc::{c_uchar,c_uint,size_t};
+
+use std::os::raw::{c_uchar, c_uint};
 
 use ::{BayerDepth,BayerError,BayerResult,CFA,RasterDepth,RasterMut};
 use demosaic;
@@ -31,7 +32,7 @@ unsafe fn transmute_raster_mut<'a>(dst: *mut CRasterMut)
 
 fn run_demosaic<F>(file: &'static str, line: u32,
         run: F,
-        src: *const c_uchar, src_len: size_t,
+        src: *const c_uchar, src_len: usize,
         depth: c_uint, be: c_uint, cfa: c_uint,
         dst: *mut CRasterMut)
         -> c_uint
@@ -80,7 +81,7 @@ fn run_demosaic<F>(file: &'static str, line: u32,
 /// Demosaicing without any interpolation.
 #[no_mangle]
 pub extern "C" fn bayerrs_demosaic_none(
-        src: *const c_uchar, src_len: size_t,
+        src: *const c_uchar, src_len: usize,
         depth: c_uint, be: c_uint, cfa: c_uint,
         dst: *mut CRasterMut)
         -> c_uint {
@@ -92,7 +93,7 @@ pub extern "C" fn bayerrs_demosaic_none(
 /// Demosaicing using nearest neighbour interpolation.
 #[no_mangle]
 pub extern "C" fn bayerrs_demosaic_nearest_neighbour(
-        src: *const c_uchar, src_len: size_t,
+        src: *const c_uchar, src_len: usize,
         depth: c_uint, be: c_uint, cfa: c_uint,
         dst: *mut CRasterMut)
         -> c_uint {
@@ -104,7 +105,7 @@ pub extern "C" fn bayerrs_demosaic_nearest_neighbour(
 /// Demosaicing using linear interpolation.
 #[no_mangle]
 pub extern "C" fn bayerrs_demosaic_linear(
-        src: *const c_uchar, src_len: size_t,
+        src: *const c_uchar, src_len: usize,
         depth: c_uint, be: c_uint, cfa: c_uint,
         dst: *mut CRasterMut)
         -> c_uint {
@@ -116,7 +117,7 @@ pub extern "C" fn bayerrs_demosaic_linear(
 /// Demosaicing using cubic interpolation.
 #[no_mangle]
 pub extern "C" fn bayerrs_demosaic_cubic(
-        src: *const c_uchar, src_len: size_t,
+        src: *const c_uchar, src_len: usize,
         depth: c_uint, be: c_uint, cfa: c_uint,
         dst: *mut CRasterMut)
         -> c_uint {
@@ -132,8 +133,8 @@ pub extern "C" fn bayerrs_demosaic_cubic(
 /// Allocate a new raster.
 #[no_mangle]
 pub extern "C" fn bayerrs_raster_mut_alloc(
-        x: size_t, y: size_t, w: size_t, h: size_t, stride: size_t, depth: c_uint,
-        buf: *mut c_uchar, buf_len: size_t)
+        x: usize, y: usize, w: usize, h: usize, stride: usize, depth: c_uint,
+        buf: *mut c_uchar, buf_len: usize)
         -> *mut CRasterMut {
     if buf.is_null() {
         printerrorln!("bad input parameters");
