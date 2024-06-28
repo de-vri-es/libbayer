@@ -1,6 +1,6 @@
 //! Collection of demosaicing algorithms.
 
-use {BayerDepth, RasterDepth};
+use crate::{BayerDepth, RasterDepth};
 
 /// The demosaicing algorithm to use to fill in the missing data.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

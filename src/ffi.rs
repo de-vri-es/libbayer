@@ -7,8 +7,8 @@ use std::slice;
 
 use std::os::raw::{c_uchar, c_uint};
 
-use demosaic;
-use {BayerDepth, BayerError, BayerResult, RasterDepth, RasterMut, CFA};
+use crate::demosaic;
+use crate::{BayerDepth, BayerError, BayerResult, RasterDepth, RasterMut, CFA};
 
 /// Dummy opaque structure, equivalent to RasterMut<'a>.
 pub struct CRasterMut;

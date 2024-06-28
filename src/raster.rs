@@ -2,7 +2,7 @@
 
 use std::slice;
 
-use RasterMut;
+use crate::RasterMut;
 
 /// Depth of a raster.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -118,7 +118,7 @@ impl RasterDepth {
 #[cfg(test)]
 mod tests {
     use super::RasterDepth;
-    use RasterMut;
+    use crate::RasterMut;
 
     #[test]
     #[should_panic]

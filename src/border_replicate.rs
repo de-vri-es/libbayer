@@ -10,8 +10,8 @@
 
 use std::io::Read;
 
-use bayer::*;
-use BayerResult;
+use crate::bayer::*;
+use crate::BayerResult;
 
 /// Tuple structs (x1, x2, x3) designating the different sub-regions
 /// of the output lines.
@@ -120,9 +120,10 @@ impl BayerRead16 for BorderReplicate16LE {
 
 #[cfg(test)]
 mod tests {
-    use super::BorderReplicate8;
-    use bayer::BayerRead8;
     use std::io::Cursor;
+
+    use super::BorderReplicate8;
+    use crate::bayer::BayerRead8;
 
     #[test]
     fn test_replicate_even() {

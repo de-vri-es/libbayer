@@ -2,8 +2,8 @@
 
 use std::io::Read;
 
-use bayer::*;
-use BayerResult;
+use crate::bayer::*;
+use crate::BayerResult;
 
 pub struct BorderNone8;
 pub struct BorderNone16BE;

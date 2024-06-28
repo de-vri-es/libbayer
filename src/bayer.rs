@@ -3,7 +3,7 @@
 use byteorder::{BigEndian, LittleEndian, ReadBytesExt};
 use std::io::Read;
 
-use BayerResult;
+use crate::BayerResult;
 
 /// The 2x2 colour filter array (CFA) pattern.
 ///

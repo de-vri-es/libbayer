@@ -2,10 +2,10 @@
 
 use std::io::Read;
 
-use bayer::{BayerRead16, BayerRead8};
-use border_none::*;
-use demosaic::check_depth;
-use {BayerDepth, BayerError, BayerResult, RasterMut, CFA};
+use crate::bayer::{BayerRead16, BayerRead8};
+use crate::border_none::*;
+use crate::demosaic::check_depth;
+use crate::{BayerDepth, BayerError, BayerResult, RasterMut, CFA};
 
 pub fn run(r: &mut dyn Read, depth: BayerDepth, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
     if dst.w < 2 || dst.h < 2 {
@@ -105,9 +105,10 @@ fn debayer_u16(r: &mut dyn Read, be: bool, cfa: CFA, dst: &mut RasterMut) -> Bay
 
 #[cfg(test)]
 mod tests {
-    use super::debayer_u8;
     use std::io::Cursor;
-    use {RasterDepth, RasterMut, CFA};
+
+    use super::debayer_u8;
+    use crate::{RasterDepth, RasterMut, CFA};
 
     #[test]
     fn test_even() {

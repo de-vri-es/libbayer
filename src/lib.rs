@@ -1,10 +1,5 @@
 //! This crate provides routines for demosaicing Bayer raw images.
 
-extern crate byteorder;
-
-#[cfg(feature = "rayon")]
-extern crate rayon;
-
 #[macro_use]
 extern crate quick_error;
 
