@@ -1,6 +1,5 @@
 //! Bayer image definitions.
 
-use byteorder::{BigEndian, LittleEndian, ReadBytesExt};
 use std::io::Read;
 
 use crate::BayerResult;
@@ -51,7 +50,9 @@ pub fn read_exact_u8(r: &mut dyn Read, buf: &mut [u8]) -> BayerResult<()> {
 /// For u16 big-endian source data.
 pub fn read_exact_u16be(r: &mut dyn Read, buf: &mut [u16]) -> BayerResult<()> {
     for val in buf {
-        *val = r.read_u16::<BigEndian>()?;
+        let mut raw = [0; 2];
+        r.read_exact(&mut raw)?;
+        *val = u16::from_be_bytes(raw)
     }
     Ok(())
 }
@@ -60,7 +61,9 @@ pub fn read_exact_u16be(r: &mut dyn Read, buf: &mut [u16]) -> BayerResult<()> {
 /// For u16 little-endian source data.
 pub fn read_exact_u16le(r: &mut dyn Read, buf: &mut [u16]) -> BayerResult<()> {
     for val in buf {
-        *val = r.read_u16::<LittleEndian>()?;
+        let mut raw = [0; 2];
+        r.read_exact(&mut raw)?;
+        *val = u16::from_le_bytes(raw)
     }
     Ok(())
 }
