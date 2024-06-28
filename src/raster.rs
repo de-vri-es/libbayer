@@ -125,8 +125,8 @@ mod tests {
     fn test_raster_mut_overflow() {
         let mut buf = [0; 1];
         let _ = RasterMut::new(
-            ::std::usize::MAX,
-            ::std::usize::MAX,
+            usize::MAX,
+            usize::MAX,
             RasterDepth::Depth8,
             &mut buf,
         );

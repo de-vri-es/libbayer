@@ -1,9 +1,5 @@
 //! WriteBayer.
 
-extern crate bayer;
-extern crate flic;
-extern crate sdl2;
-
 use sdl2::image::LoadSurface;
 use sdl2::surface::Surface;
 use std::env;
@@ -39,7 +35,7 @@ fn main() {
             continue;
         }
 
-        if let Ok(mut flic) = flic::FlicFile::open(&src) {
+        if let Ok(mut flic) = flic::FlicFile::open(src) {
             let w = flic.width() as usize;
             let h = flic.height() as usize;
             let mut buf = vec![0; w * h];
@@ -56,7 +52,7 @@ fn main() {
             continue;
         }
 
-        if let Ok(surface) = Surface::from_file(&src) {
+        if let Ok(surface) = Surface::from_file(src) {
             let w = surface.width() as usize;
             let h = surface.height() as usize;
             surface.with_lock(|s| write_mosaic_rgba(&dst, s, w, h, cfa));
@@ -72,7 +68,7 @@ fn usage() {
     println!();
 }
 
-fn parse_cfa(s: &String) -> bayer::CFA {
+fn parse_cfa(s: &str) -> bayer::CFA {
     let s = s.to_uppercase();
     if s == "BGGR" {
         bayer::CFA::BGGR
@@ -98,7 +94,7 @@ fn write_mosaic_rgba(dst: &PathBuf, s: &[u8], w: usize, h: usize, cfa: bayer::CF
             let c = match cfa_x {
                 bayer::CFA::BGGR => s[4 * w * y + 4 * x + 2],
                 bayer::CFA::GBRG | bayer::CFA::GRBG => s[4 * w * y + 4 * x + 1],
-                bayer::CFA::RGGB => s[4 * w * y + 4 * x + 0],
+                bayer::CFA::RGGB => s[4 * w * y + 4 * x],
             };
 
             v.push(c);
@@ -108,7 +104,7 @@ fn write_mosaic_rgba(dst: &PathBuf, s: &[u8], w: usize, h: usize, cfa: bayer::CF
         cfa_y = cfa_y.next_y();
     }
 
-    if let Ok(mut fp) = File::create(&dst) {
+    if let Ok(mut fp) = File::create(dst) {
         println!("writing {} [{}x{}]", dst.display(), w, h);
         let _ = fp.write_all(&v[..]);
     }
@@ -125,7 +121,7 @@ fn write_mosaic_pal(dst: &PathBuf, buf: &[u8], pal: &[u8], w: usize, h: usize, c
             let c = match cfa_x {
                 bayer::CFA::BGGR => pal[3 * buf[w * y + x] as usize + 2],
                 bayer::CFA::GBRG | bayer::CFA::GRBG => pal[3 * buf[w * y + x] as usize + 1],
-                bayer::CFA::RGGB => pal[3 * buf[w * y + x] as usize + 0],
+                bayer::CFA::RGGB => pal[3 * buf[w * y + x] as usize],
             };
 
             v.push(c);
@@ -135,7 +131,7 @@ fn write_mosaic_pal(dst: &PathBuf, buf: &[u8], pal: &[u8], w: usize, h: usize, c
         cfa_y = cfa_y.next_y();
     }
 
-    if let Ok(mut fp) = File::create(&dst) {
+    if let Ok(mut fp) = File::create(dst) {
         println!("writing {} [{}x{}]", dst.display(), w, h);
         let _ = fp.write_all(&v[..]);
     }
