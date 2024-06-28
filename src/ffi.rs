@@ -29,6 +29,7 @@ unsafe fn transmute_raster_mut<'a>(dst: *mut CRasterMut) -> &'a mut RasterMut<'a
     &mut *ptr
 }
 
+#[allow(clippy::too_many_arguments)]
 fn run_demosaic<F>(
     file: &'static str,
     line: u32,
@@ -72,7 +73,7 @@ where
     let src_slice = unsafe { slice::from_raw_parts(src, src_len) };
     let dst_raster = unsafe { transmute_raster_mut(dst) };
 
-    match run(&mut Cursor::new(&src_slice[..]), depth, cfa, dst_raster) {
+    match run(&mut Cursor::new(src_slice), depth, cfa, dst_raster) {
         Ok(_) => 0,
         Err(BayerError::WrongResolution) => 2,
         Err(BayerError::WrongDepth) => 3,
@@ -181,8 +182,11 @@ pub extern "C" fn bayerrs_demosaic_cubic(
 /*--------------------------------------------------------------*/
 
 /// Allocate a new raster.
+///
+/// # Safety
+/// The `buf` and `buf_len` arguments must represent a valid memory region that we can safely write to.
 #[no_mangle]
-pub extern "C" fn bayerrs_raster_mut_alloc(
+pub unsafe extern "C" fn bayerrs_raster_mut_alloc(
     x: usize,
     y: usize,
     w: usize,
@@ -214,8 +218,11 @@ pub extern "C" fn bayerrs_raster_mut_alloc(
 }
 
 /// Free a previously allocated raster.
+///
+/// # Safety
+/// The `raster` argument will be freed.
 #[no_mangle]
-pub extern "C" fn bayerrs_raster_mut_free(raster: *mut CRasterMut) {
+pub unsafe extern "C" fn bayerrs_raster_mut_free(raster: *mut CRasterMut) {
     if raster.is_null() {
         return;
     }

@@ -55,7 +55,7 @@ macro_rules! apply_kernel_row {
         while i + 1 < $w {
             apply_kernel_c!($T; $row, $prev, $curr, $next, cfa_c, i);
             apply_kernel_g!($T; $row, $prev, $curr, $next, cfa_g, i + 1);
-            i = i + 2;
+            i += 2;
         }
 
         if i < $w {
@@ -99,6 +99,8 @@ macro_rules! apply_kernel_g {
 /*--------------------------------------------------------------*/
 
 #[cfg(feature = "rayon")]
+#[allow(clippy::erasing_op)]
+#[allow(clippy::identity_op)]
 fn debayer_u8(r: &mut dyn Read, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
     let (w, h) = (dst.w, dst.h);
     let mut data = vec![0u8; (2 * PADDING + w) * (2 * PADDING + h)];
@@ -108,8 +110,8 @@ fn debayer_u8(r: &mut dyn Read, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()
         let stride = 2 * PADDING + w;
         let rdr = BorderReplicate8::new(w, PADDING);
 
-        for mut row in data.chunks_mut(stride).skip(PADDING).take(h) {
-            rdr.read_line(r, &mut row)?;
+        for row in data.chunks_mut(stride).skip(PADDING).take(h) {
+            rdr.read_line(r, row)?;
         }
 
         {
@@ -142,6 +144,8 @@ fn debayer_u8(r: &mut dyn Read, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()
 }
 
 #[cfg(feature = "rayon")]
+#[allow(clippy::erasing_op)]
+#[allow(clippy::identity_op)]
 fn debayer_u16(r: &mut dyn Read, be: bool, cfa: CFA, dst: &mut RasterMut) -> BayerResult<()> {
     let (w, h) = (dst.w, dst.h);
     let mut data = vec![0u16; (2 * PADDING + w) * (2 * PADDING + h)];
@@ -155,8 +159,8 @@ fn debayer_u16(r: &mut dyn Read, be: bool, cfa: CFA, dst: &mut RasterMut) -> Bay
             Box::new(BorderReplicate16LE::new(w, PADDING))
         };
 
-        for mut row in data.chunks_mut(stride).skip(PADDING).take(h) {
-            rdr.read_line(r, &mut row)?;
+        for row in data.chunks_mut(stride).skip(PADDING).take(h) {
+            rdr.read_line(r, row)?;
         }
 
         {

@@ -35,8 +35,8 @@ macro_rules! fill_row {
         j = $x1 + 1;
         while i > 0 {
             $dst[i - 1] = $dst[j];
-            i = i - 1;
-            j = j + 1;
+            i -= 1;
+            j += 1;
         }
 
         // Right border.
@@ -44,8 +44,8 @@ macro_rules! fill_row {
         j = $x2 - 2;
         while i < $x3 {
             $dst[i] = $dst[j];
-            i = i + 1;
-            j = j - 1;
+            i += 1;
+            j -= 1;
         }
     }};
 }

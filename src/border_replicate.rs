@@ -40,7 +40,7 @@ macro_rules! fill_row {
         while i < $x1 {
             $dst[i + 0] = r0;
             $dst[i + 1] = g0;
-            i = i + 2;
+            i += 2;
         }
 
         // Right border.
@@ -50,7 +50,7 @@ macro_rules! fill_row {
         while i + 1 < $x3 {
             $dst[i + 0] = r0;
             $dst[i + 1] = g0;
-            i = i + 2;
+            i += 2;
         }
         if i == $x3 - 1 {
             $dst[i] = r0;

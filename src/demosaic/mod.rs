@@ -13,9 +13,7 @@ pub enum Demosaic {
 
 macro_rules! rotate {
     ($v0:ident <- $v1:ident) => {{
-        let rot = $v0;
-        $v0 = $v1;
-        $v1 = rot;
+        ::core::mem::swap(&mut $v0, &mut $v1);
     }};
     ($v0:ident <- $v1:ident <- $v2:ident) => {{
         let rot = $v0;

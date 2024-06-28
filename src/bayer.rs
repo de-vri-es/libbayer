@@ -50,8 +50,8 @@ pub fn read_exact_u8(r: &mut dyn Read, buf: &mut [u8]) -> BayerResult<()> {
 /// Read the exact number of bytes required to fill buf.
 /// For u16 big-endian source data.
 pub fn read_exact_u16be(r: &mut dyn Read, buf: &mut [u16]) -> BayerResult<()> {
-    for i in 0..buf.len() {
-        buf[i] = r.read_u16::<BigEndian>()?;
+    for val in buf {
+        *val = r.read_u16::<BigEndian>()?;
     }
     Ok(())
 }
@@ -59,8 +59,8 @@ pub fn read_exact_u16be(r: &mut dyn Read, buf: &mut [u16]) -> BayerResult<()> {
 /// Read the exact number of bytes required to fill buf.
 /// For u16 little-endian source data.
 pub fn read_exact_u16le(r: &mut dyn Read, buf: &mut [u16]) -> BayerResult<()> {
-    for i in 0..buf.len() {
-        buf[i] = r.read_u16::<LittleEndian>()?;
+    for val in buf {
+        *val = r.read_u16::<LittleEndian>()?;
     }
     Ok(())
 }
