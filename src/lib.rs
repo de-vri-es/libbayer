@@ -1,8 +1,5 @@
 //! This crate provides routines for demosaicing Bayer raw images.
 
-#[macro_use]
-extern crate quick_error;
-
 use std::io::Read;
 
 pub use bayer::BayerDepth;

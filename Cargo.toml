@@ -27,7 +27,6 @@ bench = []
 [dependencies]
 byteorder = "1.1"
 rayon = { version = "0.8", optional = true }
-quick-error = "1.2"
 
 [dev-dependencies]
 flic = "0.1"
