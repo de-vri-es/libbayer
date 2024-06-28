@@ -59,10 +59,13 @@ mod raster;
 ///         bayer::Demosaic::None,
 ///         &mut dst);
 /// ```
-pub fn run_demosaic(r: &mut Read,
-        depth: BayerDepth, cfa: CFA, alg: Demosaic,
-        dst: &mut RasterMut)
-        -> BayerResult<()> {
+pub fn run_demosaic(
+    r: &mut Read,
+    depth: BayerDepth,
+    cfa: CFA,
+    alg: Demosaic,
+    dst: &mut RasterMut,
+) -> BayerResult<()> {
     match alg {
         Demosaic::None => demosaic::none::run(r, depth, cfa, dst),
         Demosaic::NearestNeighbour => demosaic::nearestneighbour::run(r, depth, cfa, dst),

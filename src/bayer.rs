@@ -1,16 +1,16 @@
 //! Bayer image definitions.
 
+use byteorder::{BigEndian, LittleEndian, ReadBytesExt};
 use std::io::Read;
-use byteorder::{BigEndian,LittleEndian,ReadBytesExt};
 
-use ::BayerResult;
+use BayerResult;
 
 /// The 2x2 colour filter array (CFA) pattern.
 ///
 /// The sequence of R, G, B describe the colours of the top-left,
 /// top-right, bottom-left, and bottom-right pixels in the 2x2 block,
 /// in that order.
-#[derive(Clone,Copy,Debug,Eq,PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum CFA {
     BGGR,
     GBRG,
@@ -23,7 +23,7 @@ pub enum CFA {
 /// Note that many cameras only capture 12-bits per pixel, but still
 /// store the data as 16-bits per pixel.  These should be treated as
 /// 16-bits per pixel for the purposes of this library.
-#[derive(Clone,Copy,Debug,Eq,PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum BayerDepth {
     Depth8,
     Depth16BE,
@@ -42,16 +42,14 @@ pub trait BayerRead16 {
 
 /// Read the exact number of bytes required to fill buf.
 /// For u8 source data.
-pub fn read_exact_u8(r: &mut Read, buf: &mut [u8])
-        -> BayerResult<()> {
+pub fn read_exact_u8(r: &mut Read, buf: &mut [u8]) -> BayerResult<()> {
     r.read_exact(buf)?;
     Ok(())
 }
 
 /// Read the exact number of bytes required to fill buf.
 /// For u16 big-endian source data.
-pub fn read_exact_u16be(r: &mut Read, buf: &mut [u16])
-        -> BayerResult<()> {
+pub fn read_exact_u16be(r: &mut Read, buf: &mut [u16]) -> BayerResult<()> {
     for i in 0..buf.len() {
         buf[i] = r.read_u16::<BigEndian>()?;
     }
@@ -60,8 +58,7 @@ pub fn read_exact_u16be(r: &mut Read, buf: &mut [u16])
 
 /// Read the exact number of bytes required to fill buf.
 /// For u16 little-endian source data.
-pub fn read_exact_u16le(r: &mut Read, buf: &mut [u16])
-        -> BayerResult<()> {
+pub fn read_exact_u16le(r: &mut Read, buf: &mut [u16]) -> BayerResult<()> {
     for i in 0..buf.len() {
         buf[i] = r.read_u16::<LittleEndian>()?;
     }
